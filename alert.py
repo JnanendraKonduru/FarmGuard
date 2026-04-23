@@ -1,6 +1,6 @@
 # ─── FarmGuard Alert Handler ─────────────────────────────────────────────────
 import requests
-from alarm import send_alarm
+from alarm import send_alarm, send_phone_call, send_urgent_ping
 import config
 from datetime import datetime
 import os
@@ -65,8 +65,10 @@ def trigger_alert(label, confidence, snapshot_path):
     # Send photo + message + alarm
     send_telegram_photo(snapshot_path, message)
 
-    from alarm import send_alarm
+    from alarm import send_alarm 
     send_alarm()
+    send_phone_call(label)
+    send_urgent_ping()
 
     # In trigger_alert(), after send_telegram_photo():
     # If photo fails (e.g. file not saved yet), send text as backup

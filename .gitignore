@@ -17,3 +17,6 @@ venv/
 
 # YOLO model weights (large files)
 *.pt
+
+#audio file
+alarm.mp3
