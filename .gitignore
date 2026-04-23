@@ -1,0 +1,19 @@
+# Secrets
+.env
+
+# Snapshots folder
+snapshots/
+
+# Database
+farmguard.db
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+farmguard-env/
+venv/
+
+# YOLO model weights (large files)
+*.pt
