@@ -1,0 +1,18 @@
+{
+  "camera_source": "0",
+  "confidence_threshold": 0.5,
+  "alert_cooldown_minutes": 2,
+  "call_cooldown_minutes": 5,
+  "telegram_alerts": true,
+  "voice_calls": true,
+  "sound_alarm": true,
+  "detection_classes": [
+    "person",
+    "dog",
+    "cat",
+    "bird",
+    "cow",
+    "horse",
+    "sheep"
+  ]
+}

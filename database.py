@@ -3,7 +3,7 @@ import sqlite3
 import os
 from datetime import datetime
 
-DB_PATH = "farmguard.db"
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "detections.db")
 
 def init_db():
     """Creates the database and table if they don't exist"""
@@ -15,7 +15,8 @@ def init_db():
             timestamp   TEXT NOT NULL,
             label       TEXT NOT NULL,
             confidence  REAL NOT NULL,
-            snapshot    TEXT
+            snapshot    TEXT,
+            alerted     INTEGER DEFAULT 0
         )
     ''')
     conn.commit()
@@ -23,6 +24,21 @@ def init_db():
     print("✅ Database ready!")
 
 def log_detection(label, confidence, snapshot_path):
+    """Saves a detection event to the database"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO detections (timestamp, label, confidence, snapshot)
+        VALUES (?, ?, ?, ?)
+    ''', (
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        label,
+        round(confidence, 3),
+        os.path.basename(snapshot_path)  # store filename only, not full path
+    ))
+    conn.commit()
+    conn.close()
+    
     """Saves a detection event to the database"""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()

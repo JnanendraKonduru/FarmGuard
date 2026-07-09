@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmGuard — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/dashboard.css"/>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="logo">
+      <div class="logo-mark">FG</div>
+      <div class="logo-text">
+        <span class="logo-name">FarmGuard</span>
+        <span class="logo-sub">Monitoring System</span>
+      </div>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle">&#8249;</button>
+  </div>
+  <nav class="nav">
+    <div class="nav-group-label">Main</div>
+    <a class="nav-item active" data-page="overview" href="#">
+      <span class="nav-ico">⬡</span>
+      <span class="nav-lbl">Overview</span>
+    </a>
+    <a class="nav-item" data-page="camera" href="#">
+      <span class="nav-ico">◉</span>
+      <span class="nav-lbl">Live Camera</span>
+      <span class="live-dot"></span>
+    </a>
+    <div class="nav-group-label">Data</div>
+    <a class="nav-item" data-page="snapshots" href="#">
+      <span class="nav-ico">▣</span>
+      <span class="nav-lbl">Snapshots</span>
+      <span class="nav-badge" id="snapBadge">0</span>
+    </a>
+    <a class="nav-item" data-page="analytics" href="#">
+      <span class="nav-ico">▲</span>
+      <span class="nav-lbl">Analytics</span>
+    </a>
+    <div class="nav-group-label">System</div>
+    <a class="nav-item" data-page="settings" href="#">
+      <span class="nav-ico">⚙</span>
+      <span class="nav-lbl">Settings</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sys-row">
+      <span class="sys-dot" id="sysDot"></span>
+      <span class="sys-txt" id="sysTxt">Connecting…</span>
+    </div>
+    <div class="sys-time" id="sysTime"></div>
+  </div>
+</aside>
+
+<div class="content" id="content">
+
+  <header class="topbar">
+    <div class="tb-left">
+      <div class="page-title" id="pageTitle">Overview</div>
+      <div class="breadcrumb" id="breadcrumb">FarmGuard / Overview</div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-clock" id="tbClock"></div>
+      <div class="alert-ping" id="alertPing" title="New detection"></div>
+    </div>
+  </header>
+
+  <!-- ══ OVERVIEW ══════════════════════════════════════════════ -->
+  <section class="page active" id="page-overview">
+    <div class="stat-row">
+      <div class="stat-card sc-blue">
+        <div class="sc-icon">📷</div>
+        <div class="sc-body">
+          <div class="sc-label">Total Detections</div>
+          <div class="sc-val" id="ovTotal">—</div>
+        </div>
+      </div>
+      <div class="stat-card sc-green">
+        <div class="sc-icon">📅</div>
+        <div class="sc-body">
+          <div class="sc-label">Today</div>
+          <div class="sc-val" id="ovToday">—</div>
+        </div>
+      </div>
+      <div class="stat-card sc-orange">
+        <div class="sc-icon">🔔</div>
+        <div class="sc-body">
+          <div class="sc-label">Alerts Sent</div>
+          <div class="sc-val" id="ovAlerts">—</div>
+        </div>
+      </div>
+      <div class="stat-card sc-dim">
+        <div class="sc-icon">🕐</div>
+        <div class="sc-body">
+          <div class="sc-label">Last Detection</div>
+          <div class="sc-val sc-val-sm" id="ovLast">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ov-grid">
+      <div class="ov-feed panel">
+        <div class="panel-header">
+          <span class="panel-title">Live Feed</span>
+          <span class="live-pill">● LIVE</span>
+        </div>
+        <div class="mini-feed">
+          <img id="ovFeed" src="/video_feed" alt="live"/>
+          <div class="fc tl"></div><div class="fc tr"></div>
+          <div class="fc bl"></div><div class="fc br"></div>
+        </div>
+        <button class="go-btn" data-page="camera">Open Full Feed →</button>
+      </div>
+
+      <div class="ov-events panel">
+        <div class="panel-header">
+          <span class="panel-title">Recent Detections</span>
+          <button class="panel-link" data-page="analytics">View all →</button>
+        </div>
+        <div class="event-list" id="ovEventList"><div class="empty">Loading…</div></div>
+      </div>
+
+      <div class="ov-threats panel">
+        <div class="panel-header"><span class="panel-title">Threat Breakdown</span></div>
+        <div class="threat-bars" id="ovThreatBars"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ LIVE CAMERA ═══════════════════════════════════════════ -->
+  <section class="page" id="page-camera">
+    <div class="cam-layout">
+      <div class="cam-main">
+        <div class="cam-topbar">
+          <span class="live-pill">● LIVE</span>
+          <span class="cam-src" id="camSrc">Camera 0 — Webcam</span>
+          <button class="ctrl-btn" id="fsBtn" title="Fullscreen">⛶</button>
+        </div>
+        <div class="feed-frame" id="feedFrame">
+          <img id="mainFeed" src="/video_feed" alt="live"/>
+          <div class="fc tl"></div><div class="fc tr"></div>
+          <div class="fc bl"></div><div class="fc br"></div>
+          <div class="threat-banner" id="threatBanner">
+            <span>⚠ THREAT DETECTED</span>
+            <span id="bannerLabel"></span>
+          </div>
+        </div>
+        <div class="cam-footer">
+          <span id="camFooterMeta">Streaming…</span>
+          <span>HD 1280×720</span>
+        </div>
+      </div>
+      <div class="cam-side">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Today</span></div>
+          <div class="csb-stats">
+            <div class="csb-row"><span class="csb-lbl">Detections</span><span class="csb-val blue" id="camToday">—</span></div>
+            <div class="csb-row"><span class="csb-lbl">Alerts</span><span class="csb-val orange" id="camAlerts">—</span></div>
+            <div class="csb-row"><span class="csb-lbl">Last event</span><span class="csb-val green" id="camLast">—</span></div>
+          </div>
+        </div>
+        <div class="panel" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="panel-header"><span class="panel-title">Live Events</span></div>
+          <div class="event-list" id="camEventList" style="overflow-y:auto;flex:1"><div class="empty">No events yet</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SNAPSHOTS ════════════════════════════════════════════ -->
+  <section class="page" id="page-snapshots">
+    <div class="snap-bar">
+      <span class="snap-count" id="snapCount">Loading…</span>
+      <input class="search-box" id="snapSearch" type="text" placeholder="Search filename…"/>
+    </div>
+    <div class="snap-grid" id="snapGrid"><div class="empty">Loading…</div></div>
+    <div class="lightbox" id="lightbox">
+      <div class="lb-bg" id="lbBg"></div>
+      <div class="lb-box">
+        <div class="lb-bar"><span id="lbName"></span><button class="lb-close" id="lbClose">✕</button></div>
+        <img class="lb-img" id="lbImg" src="" alt=""/>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ANALYTICS ════════════════════════════════════════════ -->
+  <section class="page" id="page-analytics">
+    <div class="an-layout">
+      <div class="an-main">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Detection Log</span>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input class="search-box" id="histSearch" type="text" placeholder="Filter label…" style="width:150px"/>
+              <button class="danger-btn" id="clearBtn">🗑 Clear All</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="det-table">
+              <thead><tr><th>#</th><th>Timestamp</th><th>Label</th><th>Confidence</th><th>Alerted</th><th>Snapshot</th></tr></thead>
+              <tbody id="histBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+      <div class="an-side">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Top Threats</span></div>
+          <div class="threat-bars" id="anThreatBars"><div class="empty">Loading…</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Active Classes</span></div>
+          <div class="class-legend" id="classLegend"><div class="empty">—</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SETTINGS ═════════════════════════════════════════════ -->
+  <section class="page" id="page-settings">
+    <div class="settings-layout">
+      <div class="settings-col">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">📷 Camera</span></div>
+          <label class="form-lbl">Source <span class="form-hint">0 = webcam &nbsp;|&nbsp; IP Webcam URL for phone</span></label>
+          <input class="form-input" id="setCamera" type="text" placeholder="0 or http://192.168.x.x:8080/video"/>
+          <label class="form-lbl" style="margin-top:16px">Confidence Threshold <span class="form-hint" id="confDisp">0.50</span></label>
+          <div class="range-row">
+            <span class="range-cap">0.1</span>
+            <input class="form-range" id="setConf" type="range" min="0.1" max="1" step="0.05" value="0.5"/>
+            <span class="range-cap">1.0</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">⏱ Cooldowns</span></div>
+          <label class="form-lbl">Alert cooldown (minutes)</label>
+          <input class="form-input" id="setAlertCD" type="number" min="1" max="60" value="2"/>
+          <label class="form-lbl" style="margin-top:12px">Call cooldown (minutes)</label>
+          <input class="form-input" id="setCallCD" type="number" min="1" max="60" value="5"/>
+        </div>
+      </div>
+      <div class="settings-col">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">🔔 Alert Channels</span></div>
+          <label class="tog-row">
+            <div><div class="tog-lbl">Telegram Alerts</div><div class="tog-sub">Photo + message via bot</div></div>
+            <input type="checkbox" class="tog-cb" id="setTelegram"/><span class="tog-sw"></span>
+          </label>
+          <label class="tog-row">
+            <div><div class="tog-lbl">Voice Calls</div><div class="tog-sub">CallMeBot on detection</div></div>
+            <input type="checkbox" class="tog-cb" id="setVoice"/><span class="tog-sw"></span>
+          </label>
+          <label class="tog-row">
+            <div><div class="tog-lbl">Sound Alarm</div><div class="tog-sub">Local beep</div></div>
+            <input type="checkbox" class="tog-cb" id="setSound"/><span class="tog-sw"></span>
+          </label>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">🎯 Detection Classes</span></div>
+          <p class="form-hint" style="margin-bottom:12px">Toggle which objects trigger alerts</p>
+          <div class="chip-grid" id="classChips"></div>
+        </div>
+      </div>
+    </div>
+    <div class="save-bar">
+      <button class="save-btn" id="saveBtn">💾 Save Settings</button>
+      <span class="save-msg" id="saveMsg"></span>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

@@ -19,4 +19,7 @@ venv/
 *.pt
 
 #audio file
-alarm.mp3
+alarm.mp3detections.db
+pending_alert.json
+
+directory_structure.txt
