@@ -16,6 +16,7 @@ import sys
 import cv2
 from datetime import datetime
 from dotenv import load_dotenv
+import numpy as np
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
@@ -88,14 +89,10 @@ def generate_frames():
             except Exception:
                 pass
         else:
-            # Send a placeholder black frame if live.jpg doesn't exist yet
-            placeholder = cv2.imencode(".jpg", 
-                cv2.putText(
-                    __import__("numpy").zeros((360, 640, 3), dtype="uint8"),
-                    "Waiting for detector...", (120, 180),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 200, 100), 2
-                )
-            )[1].tobytes()
+            frame = np.zeros((360, 640, 3), dtype="uint8")
+            cv2.putText(frame, "Waiting for detector...", (120, 180),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 200, 100), 2)
+            placeholder = cv2.imencode(".jpg", frame)[1].tobytes()
             yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + placeholder + b"\r\n")
         time.sleep(1 / 20)  # ~20 fps
 

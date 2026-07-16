@@ -24,32 +24,18 @@ def init_db():
     print("✅ Database ready!")
 
 def log_detection(label, confidence, snapshot_path):
-    """Saves a detection event to the database"""
+    """Saves a single detection event to the database"""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO detections (timestamp, label, confidence, snapshot)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO detections (timestamp, label, confidence, snapshot, alerted)
+        VALUES (?, ?, ?, ?, ?)
     ''', (
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         label,
         round(confidence, 3),
-        os.path.basename(snapshot_path)  # store filename only, not full path
-    ))
-    conn.commit()
-    conn.close()
-    
-    """Saves a detection event to the database"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO detections (timestamp, label, confidence, snapshot)
-        VALUES (?, ?, ?, ?)
-    ''', (
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        label,
-        round(confidence, 3),
-        snapshot_path
+        os.path.basename(snapshot_path),  # store filename only, not full path
+        1
     ))
     conn.commit()
     conn.close()

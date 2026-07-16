@@ -6,8 +6,8 @@ model = None  # loaded once, reused
 
 def load_model():
     global model
-    model = YOLO("yolov8n.pt")
-    print("✅ YOLO model loaded!")
+    model = YOLO("yolo26n.pt")
+    print("✅ YOLO26 model loaded!")
 
 def detect(frame):
     """Run inference. Returns list of (label, confidence, bbox) tuples."""
