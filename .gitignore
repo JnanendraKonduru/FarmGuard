@@ -23,3 +23,5 @@ alarm.mp3detections.db
 pending_alert.json
 
 directory_structure.txt
+
+*.db
