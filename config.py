@@ -24,7 +24,7 @@ SNAPSHOT_DIR = "snapshots"
 SHOW_PREVIEW_WINDOW = False
 
 # ── Pull overrides from the dashboard's saved settings, if present ──────────
-_SETTINGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dashboard_settings.json")
+_SETTINGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "farmguard_dashboard", "dashboard_settings.json")
 if os.path.exists(_SETTINGS_FILE):
     try:
         with open(_SETTINGS_FILE) as f:
